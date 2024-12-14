@@ -1,0 +1,52 @@
+
+services:
+###> doctrine/doctrine-bundle ###
+  database:
+    container_name: library_api_database
+    image: postgres:${POSTGRES_VERSION:-16}
+    networks:
+      - library_api
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-library}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - library_api_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+
+  symfony:
+    container_name: library_api_symfony
+    networks:
+      - library_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ../library_api:/var/www/html:rw
+    depends_on:
+      - database
+
+  mailhog:
+    container_name: library_api_mailhog
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025" # Mailhog UI (HTTP) port
+      - "1025:1025" # Mailhog SMTP port
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  library_api_data:
+###< doctrine/doctrine-bundle ###
+
+networks:
+  library_api:
+    driver: bridge
