@@ -1,0 +1,26 @@
+# config/packages/security.yaml
+security:
+  firewalls:
+    main:
+      # Utiliser l'authentification par formulaire par défaut
+      form_login:
+        login_path: app_login # Chemin de la route pour le formulaire de connexion
+        check_path: app_login_check # Chemin de la route pour la vérification du formulaire de connexion
+      # Redirige vers l'URL de la page de succès après l'authentification
+      logout:
+        path: app_logout
+        target: /login
+
+  password_hashers:
+    # a hasher used in the past for some users
+    legacy:
+      algorithm: sha256
+      encode_as_base64: false
+      iterations: 1
+
+    App\Entity\User:
+      # the new hasher, along with its options
+      algorithm: sodium
+      migrate_from:
+        - bcrypt # uses the "bcrypt" hasher with the default options
+        - legacy # uses the "legacy" hasher configured above

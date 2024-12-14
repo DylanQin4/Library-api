@@ -6,26 +6,31 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 150)]
+    #[NotBlank(message: 'Ce champ ne peut pas être vide')]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: 'Ce champ ne peut pas être vide')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: 'Ce champ ne peut pas être vide')]
     private ?string $password = null;
 
     /**

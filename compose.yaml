@@ -1,6 +1,5 @@
-
 services:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     container_name: library_api_database
     image: postgres:${POSTGRES_VERSION:-16}
@@ -10,16 +9,19 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-library}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
+    ports:
+      - "5433:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB:-library} -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 60s
+      start_period: 30s
     volumes:
       - library_api_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # Vous pouvez décommenter cette ligne pour utiliser un répertoire local :
       # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
 
   symfony:
     container_name: library_api_symfony
@@ -33,19 +35,21 @@ services:
     volumes:
       - ../library_api:/var/www/html:rw
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   mailhog:
     container_name: library_api_mailhog
     image: mailhog/mailhog:latest
+    networks:
+      - library_api
     ports:
       - "8025:8025" # Mailhog UI (HTTP) port
       - "1025:1025" # Mailhog SMTP port
 
 volumes:
-###> doctrine/doctrine-bundle ###
   library_api_data:
-###< doctrine/doctrine-bundle ###
+    driver: local
 
 networks:
   library_api:
