@@ -17,6 +17,10 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
+        // Chargement des données a partir de data.sql
+        $this->loadDataFromSqlFile($manager, '/sql/data.sql');
+
+        // Ajout de nouvelles donnees fixes
         $admin = new User();
         $admin->setLastName('admin');
         $admin->setEmail('admin@example.com');
@@ -28,16 +32,23 @@ class AppFixtures extends Fixture
         $user1->setEmail('alice@example.com');
         $user1->setPassword($this->passwordHasher->hashPassword($user1, '123'));
 
-        $user2 = new User();
-        $user2->setFirstName('Bob');
-        $user2->setLastName('Johnson');
-        $user2->setEmail('bob@example.com');
-        $user2->setPassword($this->passwordHasher->hashPassword($user2, '456'));
-
         $manager->persist($admin);
         $manager->persist($user1);
-        $manager->persist($user2);
 
         $manager->flush();
+    }
+
+    private function loadDataFromSqlFile(ObjectManager $manager, string $sqlFile): void
+    {
+        $projectRoot = realpath(__DIR__ . '/../../');
+        $fullPath = $projectRoot . $sqlFile;
+
+        if (file_exists($fullPath)) {
+            $conn = $manager->getConnection();
+            $sql = file_get_contents($fullPath);
+            $conn->exec($sql);
+        } else {
+            throw new \RuntimeException("Le fichier SQL $fullPath n'existe pas.");
+        }
     }
 }

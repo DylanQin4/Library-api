@@ -3,8 +3,6 @@ services:
   database:
     container_name: library_api_database
     image: postgres:${POSTGRES_VERSION:-16}
-    networks:
-      - library_api
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-library}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -25,8 +23,6 @@ services:
 
   symfony:
     container_name: library_api_symfony
-    networks:
-      - library_api
     build:
       context: .
       dockerfile: Dockerfile
@@ -41,8 +37,6 @@ services:
   mailhog:
     container_name: library_api_mailhog
     image: mailhog/mailhog:latest
-    networks:
-      - library_api
     ports:
       - "8025:8025" # Mailhog UI (HTTP) port
       - "1025:1025" # Mailhog SMTP port

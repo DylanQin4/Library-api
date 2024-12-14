@@ -13,6 +13,15 @@ INSERT INTO book (author_id, title, publication_date, number_pages) VALUES
     (2, '1984', '1949-06-08', 328),
     (2, 'Animal Farm', '1945-08-17', 112);
 
+INSERT INTO book_category (book_id, category_id) VALUES
+    (1, 1), -- Harry Potter and the Sorcerer's Stone → Fantasy
+    (1, 2), -- Harry Potter and the Sorcerer's Stone → Science Fiction
+    (2, 1), -- Harry Potter and the Chamber of Secrets → Fantasy
+    (2, 2), -- Harry Potter and the Chamber of Secrets → Science Fiction
+    (3, 3), -- 1984 → Literature
+    (4, 3); -- Animal Farm → Literature
+
+
 INSERT INTO roles (name) VALUES
     ('USER'),
     ('ADMIN');

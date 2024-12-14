@@ -44,23 +44,13 @@ Ce projet est une application API Symfony pour la gestion d'une bibliothèque. I
     ```bash
     docker exec -it library_api_symfony bash -c "php bin/console doctrine:migrations:migrate"
     ```
-
-7. Copiez les données de test dans le conteneur de la base de données :
-
-    ```bash
-   docker cp ./sql/data.sql library_api_database:/var/lib/postgresql/
-    ```
    
-8. Exécutez les données de test dans le conteneur de la base de données :
-
-    ```bash
-   docker exec -it library_api_database psql -U postgres -d library -f /var/lib/postgresql/data.sql
-    ```
-   
-9. Chargez les fixtures :
+7. Chargez les fixtures :
 
     ```bash
     docker exec -it library_api_symfony bash -c "php bin/console doctrine:fixtures:load"
     ```
-   
-10. L'API est maintenant accessible à l'adresse `http://localhost:8080`.
+   repondez `yes` pour confirmer le chargement des fixtures.
+
+
+8. L'API est maintenant accessible à l'adresse `http://localhost:8080`.
