@@ -12,15 +12,16 @@ security:
         target: /login
 
   password_hashers:
-    # a hasher used in the past for some users
-    legacy:
-      algorithm: sha256
-      encode_as_base64: false
-      iterations: 1
 
     App\Entity\User:
       # the new hasher, along with its options
-      algorithm: sodium
-      migrate_from:
-        - bcrypt # uses the "bcrypt" hasher with the default options
-        - legacy # uses the "legacy" hasher configured above
+      algorithm: auto
+
+
+
+  providers:
+    # used to reload user from session & other features (e.g. switch_user)
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
