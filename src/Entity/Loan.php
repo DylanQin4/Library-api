@@ -24,9 +24,9 @@ class Loan
     #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;
 
-    #[ORM\ManyToOne(inversedBy: 'loans')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $loanedBy = null;
+//    #[ORM\ManyToOne(inversedBy: 'loans')]
+//    #[ORM\JoinColumn(nullable: false)]
+//    private ?OldUser $loanedBy = null;
 
     public function getId(): ?int
     {
@@ -69,15 +69,15 @@ class Loan
         return $this;
     }
 
-    public function getLoanedBy(): ?User
-    {
-        return $this->loanedBy;
-    }
+//    public function getLoanedBy(): ?OldUser
+//    {
+//        return $this->loanedBy;
+//    }
 
-    public function setLoanedBy(?User $loanedBy): static
-    {
-        $this->loanedBy = $loanedBy;
-
-        return $this;
-    }
+//    public function setLoanedBy(?OldUser $loanedBy): static
+//    {
+//        $this->loanedBy = $loanedBy;
+//
+//        return $this;
+//    }
 }
