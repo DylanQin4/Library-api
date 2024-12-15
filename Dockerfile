@@ -5,7 +5,7 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y \
 #    git \
 #    unzip \
-    php-zip \
+#    php-zip \
     libicu-dev \
     libpq-dev \
     libonig-dev \
