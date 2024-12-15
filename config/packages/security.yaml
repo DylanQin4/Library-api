@@ -1,27 +1,39 @@
-# config/packages/security.yaml
 security:
-  firewalls:
-    main:
-      # Utiliser l'authentification par formulaire par défaut
-      form_login:
-        login_path: app_login # Chemin de la route pour le formulaire de connexion
-        check_path: app_login_check # Chemin de la route pour la vérification du formulaire de connexion
-      # Redirige vers l'URL de la page de succès après l'authentification
-      logout:
-        path: app_logout
-        target: /login
+#    enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
 
-  password_hashers:
+        main:
+            lazy: true
+            provider: app_user_provider
+            json_login:
+                check_path: /api/login_check
+                #                username_path: email
+                #                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api/
+            stateless: true
+            jwt: ~
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
 
-    App\Entity\User:
-      # the new hasher, along with its options
-      algorithm: auto
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
 
-
-
-  providers:
-    # used to reload user from session & other features (e.g. switch_user)
-    app_user_provider:
-      entity:
-        class: App\Entity\User
-        property: email
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_ADMIN | ROLE_USER }
+#        - { path: ^/api, roles: ROLE_USER }
