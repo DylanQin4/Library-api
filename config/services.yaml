@@ -23,3 +23,7 @@ services:
     App\Security\CustomAuthenticationFailureHandler:
         tags:
             - { name: 'monolog.logger', channel: 'security' }
+
+    App\EventListener\RequestValidationListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 10 }
